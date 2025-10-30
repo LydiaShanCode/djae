@@ -55,28 +55,35 @@ const PlaylistPanel = ({
     setDragOverIndex(null);
   };
 
+  const currentTrack = tracks.find(t => t.id === currentTrackId);
+
   return (
-    <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-xl shadow-2xl border border-gray-700 h-full flex flex-col">
-      {/* Playlist Header */}
-      <div className="p-6 border-b border-gray-700">
-        <div className="flex items-start gap-4">
-          <div className="bg-gradient-to-br from-purple-600 to-indigo-600 p-4 rounded-lg">
-            <Music className="w-8 h-8 text-white" />
-          </div>
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold text-white mb-2">{playlistTitle}</h2>
-            <div className="flex gap-4 text-sm text-gray-400">
-              <span>{tracks.length} tracks</span>
-              <span>•</span>
-              <span>{formatTotalDuration(totalDuration)}</span>
+    <div className="bg-white rounded-3xl shadow-neumorphic h-full flex flex-col overflow-hidden">
+      {/* Now Playing Card */}
+      {currentTrack && (
+        <div className="p-6 border-b border-gray-200">
+          <div className="bg-gradient-to-br from-green-100 to-green-200 rounded-2xl p-4 flex items-center gap-4">
+            <div className="w-20 h-20 rounded-xl overflow-hidden shadow-lg flex-shrink-0">
+              <img
+                src={currentTrack.albumArtUrl}
+                alt={currentTrack.album}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-gray-600 mb-1">Now Playing:</p>
+              <h3 className="text-lg font-bold text-gray-800 truncate">
+                {currentTrack.title}
+              </h3>
+              <p className="text-sm text-gray-600 truncate">{currentTrack.artist}</p>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Track List */}
       <ScrollArea className="flex-1">
-        <div className="p-4 space-y-2">
+        <div className="p-4 space-y-1">
           {tracks.map((track, index) => (
             <div
               key={track.id}
@@ -87,57 +94,40 @@ const PlaylistPanel = ({
               onDragEnd={handleDragEnd}
               onClick={() => onTrackSelect(index)}
               className={`
-                group relative bg-gray-800/60 rounded-lg p-3 border transition-all cursor-move
+                group flex items-center gap-3 p-3 rounded-xl transition-all cursor-move
                 ${currentTrackId === track.id 
-                  ? 'border-purple-500 bg-purple-900/30' 
-                  : 'border-gray-700 hover:border-gray-600 hover:bg-gray-800'
+                  ? 'bg-gray-100' 
+                  : 'hover:bg-gray-50'
                 }
                 ${draggedIndex === index ? 'opacity-50' : ''}
-                ${dragOverIndex === index && draggedIndex !== index ? 'border-blue-500 border-t-2' : ''}
+                ${dragOverIndex === index && draggedIndex !== index ? 'border-t-2 border-blue-400' : ''}
               `}
             >
-              <div className="flex items-center gap-3">
-                {/* Drag Handle */}
-                <div className="text-gray-500 group-hover:text-gray-300 transition-colors">
-                  <GripVertical className="w-5 h-5" />
-                </div>
-
-                {/* Track Number */}
-                <div className={`
-                  w-8 text-center font-semibold text-sm
-                  ${currentTrackId === track.id ? 'text-purple-400' : 'text-gray-500'}
-                `}>
-                  {index + 1}
-                </div>
-
-                {/* Album Art */}
-                <img
-                  src={track.albumArtUrl}
-                  alt={track.album}
-                  className="w-12 h-12 rounded object-cover"
-                />
-
-                {/* Track Info */}
-                <div className="flex-1 min-w-0">
-                  <h4 className={`
-                    font-semibold truncate
-                    ${currentTrackId === track.id ? 'text-purple-300' : 'text-white'}
-                  `}>
-                    {track.title}
-                  </h4>
-                  <p className="text-gray-400 text-sm truncate">{track.artist}</p>
-                </div>
-
-                {/* Duration */}
-                <div className="text-gray-400 text-sm">
-                  {formatDuration(track.duration)}
-                </div>
+              {/* Drag Handle */}
+              <div className="text-gray-300 group-hover:text-gray-400 transition-colors flex-shrink-0">
+                <GripVertical className="w-4 h-4" />
               </div>
 
-              {/* Now Playing Indicator */}
-              {currentTrackId === track.id && (
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-purple-500 rounded-l-lg"></div>
-              )}
+              {/* Album Art */}
+              <img
+                src={track.albumArtUrl}
+                alt={track.album}
+                className="w-12 h-12 rounded-lg object-cover flex-shrink-0 shadow-sm"
+              />
+
+              {/* Track Info */}
+              <div className="flex-1 min-w-0">
+                <h4 className="font-semibold text-gray-800 truncate text-sm">
+                  {track.title}
+                </h4>
+                <p className="text-gray-500 text-xs truncate">{track.artist}</p>
+              </div>
+
+              {/* Metadata */}
+              <div className="flex items-center gap-3 text-xs text-gray-400 flex-shrink-0">
+                <span>10B</span>
+                <span>79</span>
+              </div>
             </div>
           ))}
         </div>

@@ -17,32 +17,32 @@ const Header = ({ onPlaylistImport }: HeaderProps) => {
   };
 
   return (
-    <header className="bg-gradient-to-r from-purple-900 via-purple-800 to-indigo-900 border-b border-purple-700 shadow-lg">
+    <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between gap-6">
-          {/* Logo */}
+          {/* Simple Logo */}
           <div className="flex items-center gap-3">
-            <div className="bg-purple-600 p-2 rounded-lg">
-              <Music2 className="w-8 h-8 text-white" />
+            <div className="bg-white rounded-full p-3 shadow-lg border border-gray-200">
+              <Music2 className="w-6 h-6 text-gray-800" />
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-white">DJ Simulator</h1>
-              <p className="text-xs text-purple-200">Live Set Experience</p>
-            </div>
+            <span className="text-2xl font-bold text-gray-800">cycle</span>
           </div>
 
           {/* Spotify URL Input */}
           <form onSubmit={handleSubmit} className="flex-1 max-w-2xl">
             <div className="flex gap-2">
-              <Input
-                type="text"
-                name="spotifyUrl"
-                placeholder="Paste Spotify playlist URL here..."
-                className="bg-purple-950/50 border-purple-600 text-white placeholder:text-purple-300 focus:border-purple-400"
-              />
+              <div className="flex-1 relative">
+                <Music2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Input
+                  type="text"
+                  name="spotifyUrl"
+                  placeholder="https://open.spotify.com/section/0JQ5DAuChZYPe9iDh..."
+                  className="pl-10 bg-gray-100 border-gray-200 text-gray-800 placeholder:text-gray-400 focus:bg-white rounded-full"
+                />
+              </div>
               <Button 
                 type="submit"
-                className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6"
+                className="bg-gray-800 hover:bg-gray-900 text-white rounded-full px-6"
               >
                 Load
               </Button>

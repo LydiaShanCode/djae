@@ -12,7 +12,6 @@ const Index = () => {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [volume, setVolume] = useState(70);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const currentTrack = playlist.tracks[currentTrackIndex] || null;
@@ -71,16 +70,18 @@ const Index = () => {
     }
   };
 
-  const handleSeek = (time: number) => {
-    setCurrentTime(time);
-  };
-
-  const handleVolumeChange = (newVolume: number) => {
-    setVolume(newVolume);
+  const handlePrevious = () => {
+    if (currentTrackIndex > 0) {
+      setCurrentTrackIndex(currentTrackIndex - 1);
+      setCurrentTime(0);
+      toast({
+        title: "Previous track",
+        description: `Now playing: ${playlist.tracks[currentTrackIndex - 1]?.title}`,
+      });
+    }
   };
 
   const handlePlaylistImport = (url: string) => {
-    // For now, just show a message since we're using mock data
     toast({
       title: "Spotify integration coming soon",
       description: "Currently using mock playlist data for demonstration",
@@ -111,27 +112,24 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-purple-950 to-gray-950">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50">
       <Header onPlaylistImport={handlePlaylistImport} />
       
       <div className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Left Column - DJ Controller and Player Controls */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-3 space-y-6">
             <DJController
               currentTrack={currentTrack}
               upcomingTracks={upcomingTracks}
+              isPlaying={isPlaying}
             />
             
             <MusicPlayerControls
               isPlaying={isPlaying}
-              currentTime={currentTime}
-              duration={currentTrack?.duration || 0}
-              volume={volume}
               onPlayPause={handlePlayPause}
               onSkip={handleSkip}
-              onSeek={handleSeek}
-              onVolumeChange={handleVolumeChange}
+              onPrevious={handlePrevious}
             />
           </div>
 
