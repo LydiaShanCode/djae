@@ -11,21 +11,21 @@ const DJController = ({ currentTrack, upcomingTracks, isPlaying }: DJControllerP
   const nextTrack = upcomingTracks[0] || null;
 
   return (
-    <div className="bg-white rounded-3xl p-8 shadow-neumorphic">
+    <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-8 shadow-neumorphic">
       {/* Recording indicator */}
-      <div className="flex items-center gap-2 mb-6">
-        <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-        <span className="text-sm text-gray-600">1:00:49</span>
+      <div className="flex items-center gap-2 mb-4 md:mb-6">
+        <div className="w-2 h-2 md:w-3 md:h-3 bg-red-500 rounded-full animate-pulse"></div>
+        <span className="text-xs md:text-sm text-gray-600">1:00:49</span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-center">
         {/* Left Deck */}
-        <div>
+        <div className="order-1">
           <VinylDeck track={currentTrack} isPlaying={isPlaying} side="left" />
         </div>
 
-        {/* Center Mixer Controls */}
-        <div className="flex flex-col items-center gap-6">
+        {/* Center Mixer Controls - Hidden on mobile, shown on lg+ */}
+        <div className="hidden lg:flex flex-col items-center gap-6 order-2">
           {/* Top buttons grid */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -34,7 +34,7 @@ const DJController = ({ currentTrack, upcomingTracks, isPlaying }: DJControllerP
                   {Array.from({ length: 3 }).map((_, j) => (
                     <div
                       key={j}
-                      className="w-3 h-3 rounded-full bg-gradient-to-br from-blue-200 to-blue-300 shadow-sm"
+                      className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-gradient-to-br from-blue-200 to-blue-300 shadow-sm"
                     ></div>
                   ))}
                 </div>
@@ -46,7 +46,7 @@ const DJController = ({ currentTrack, upcomingTracks, isPlaying }: DJControllerP
                   {Array.from({ length: 3 }).map((_, j) => (
                     <div
                       key={j}
-                      className="w-3 h-3 rounded-full bg-gradient-to-br from-blue-200 to-blue-300 shadow-sm"
+                      className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-gradient-to-br from-blue-200 to-blue-300 shadow-sm"
                     ></div>
                   ))}
                 </div>
@@ -79,7 +79,7 @@ const DJController = ({ currentTrack, upcomingTracks, isPlaying }: DJControllerP
                   {Array.from({ length: 3 }).map((_, j) => (
                     <div
                       key={j}
-                      className="w-3 h-3 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 shadow-sm"
+                      className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 shadow-sm"
                     ></div>
                   ))}
                 </div>
@@ -91,7 +91,7 @@ const DJController = ({ currentTrack, upcomingTracks, isPlaying }: DJControllerP
                   {Array.from({ length: 3 }).map((_, j) => (
                     <div
                       key={j}
-                      className="w-3 h-3 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 shadow-sm"
+                      className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 shadow-sm"
                     ></div>
                   ))}
                 </div>
@@ -101,7 +101,7 @@ const DJController = ({ currentTrack, upcomingTracks, isPlaying }: DJControllerP
         </div>
 
         {/* Right Deck */}
-        <div>
+        <div className="order-3">
           <VinylDeck track={nextTrack} isPlaying={false} side="right" />
         </div>
       </div>

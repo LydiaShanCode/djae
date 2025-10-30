@@ -115,10 +115,10 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50">
       <Header onPlaylistImport={handlePlaylistImport} />
       
-      <div className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6">
           {/* Left Column - DJ Controller and Player Controls */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className="lg:col-span-3 space-y-4 md:space-y-6">
             <DJController
               currentTrack={currentTrack}
               upcomingTracks={upcomingTracks}
@@ -134,7 +134,7 @@ const Index = () => {
           </div>
 
           {/* Right Column - Playlist Panel */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 min-h-[400px] lg:min-h-0">
             <PlaylistPanel
               playlistTitle={playlist.title}
               tracks={playlist.tracks}
