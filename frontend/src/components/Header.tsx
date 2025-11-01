@@ -20,12 +20,13 @@ const Header = ({ onPlaylistImport }: HeaderProps) => {
     <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
       <div className="container mx-auto px-4 md:px-6 py-3 md:py-4">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 md:gap-6">
-          {/* Simple Logo */}
+          {/* DJ Logo */}
           <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
-            <div className="bg-white rounded-full p-2 md:p-3 shadow-lg border border-gray-200">
-              <Music2 className="w-5 h-5 md:w-6 md:h-6 text-gray-800" />
-            </div>
-            <span className="text-xl md:text-2xl font-bold text-gray-800">cycle</span>
+            <img 
+              src="/djae-logo.png" 
+              alt="DJAE Logo" 
+              className="h-10 md:h-12 w-auto object-contain"
+            />
           </div>
 
           {/* Spotify URL Input */}
