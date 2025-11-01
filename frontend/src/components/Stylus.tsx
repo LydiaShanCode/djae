@@ -4,24 +4,36 @@ interface StylusProps {
 }
 
 const Stylus = ({ isPlaying, side }: StylusProps) => {
-  // When not playing: 0deg (straight down)
-  // When playing: -45deg for left, 45deg for right (needle touches disk)
-  const rotation = isPlaying ? (side === "left" ? -45 : 45) : 0;
-  
+  // Different positioning and rotation for left vs right deck
+  const stylusConfig = side === "left" 
+    ? {
+        // Left deck: stylus comes from right side
+        containerClass: "right-8 top-1/2 -translate-y-1/2",
+        armRotation: isPlaying ? "rotate-[-25deg]" : "rotate-[15deg]",
+        originClass: "origin-top-right"
+      }
+    : {
+        // Right deck: stylus comes from left side
+        containerClass: "left-8 top-1/2 -translate-y-1/2",
+        armRotation: isPlaying ? "rotate-[25deg]" : "rotate-[-15deg]",
+        originClass: "origin-top-left"
+      };
+
   return (
-    <div className="absolute top-8 right-8">
-      <div className="relative w-40 h-2">
-        {/* Arm base (top circle) */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-gradient-to-br from-gray-300 to-gray-400 rounded-full shadow-lg z-10"></div>
+    <div className={`absolute ${stylusConfig.containerClass} z-20`}>
+      {/* Stylus arm pivot point */}
+      <div className="relative">
+        {/* Pivot base */}
+        <div className="absolute top-0 left-0 w-4 h-4 bg-gray-800 rounded-full shadow-lg"></div>
         
-        {/* Arm stick */}
+        {/* Stylus arm */}
         <div 
-          className="absolute right-5 top-1/2 -translate-y-1/2 w-32 h-2 bg-gradient-to-r from-gray-400 to-gray-500 rounded-full shadow-lg origin-right transition-transform duration-500"
-          style={{ transform: `translateY(-50%) rotate(${rotation}deg)` }}
+          className={`w-32 h-2 bg-gradient-to-r ${side === "left" ? "from-gray-700 to-gray-600" : "from-gray-600 to-gray-700"} rounded-full shadow-lg transition-transform duration-700 ${stylusConfig.originClass} ${stylusConfig.armRotation}`}
         >
-          {/* Needle head (bottom circle) */}
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-6 bg-gradient-to-br from-gray-500 to-gray-600 rounded-full shadow-md">
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0.5 h-3 bg-gray-700"></div>
+          {/* Cartridge at the end */}
+          <div className={`absolute ${side === "left" ? "right-0" : "left-0"} top-1/2 -translate-y-1/2 w-6 h-4 bg-gray-900 rounded-sm shadow-md`}>
+            {/* Needle tip */}
+            <div className={`absolute ${side === "left" ? "right-0" : "left-0"} top-1/2 -translate-y-1/2 w-2 h-0.5 bg-gray-400`}></div>
           </div>
         </div>
       </div>
