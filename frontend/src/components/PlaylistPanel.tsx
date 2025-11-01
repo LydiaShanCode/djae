@@ -62,7 +62,7 @@ const PlaylistPanel = ({
       {/* Now Playing Card */}
       {currentTrack && (
         <div className="p-4 md:p-6 border-b border-gray-200">
-          <div className="bg-gradient-to-br from-green-100 to-green-200 rounded-xl md:rounded-2xl p-3 md:p-4 flex items-center gap-3 md:gap-4">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl md:rounded-2xl p-3 md:p-4 flex items-center gap-3 md:gap-4">
             <div className="w-16 h-16 md:w-20 md:h-20 rounded-lg md:rounded-xl overflow-hidden shadow-lg flex-shrink-0">
               <img
                 src={currentTrack.albumArtUrl}
