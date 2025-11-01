@@ -1,4 +1,4 @@
-import { Headphones, Disc3 } from "lucide-react";
+import { Headphones } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -37,13 +37,17 @@ const Header = ({ onPlaylistImport }: HeaderProps) => {
                 type="text"
                 name="spotifyUrl"
                 placeholder="Paste your playlist link here"
-                className="w-full pl-12 md:pl-14 pr-14 md:pr-16 py-5 md:py-6 bg-gray-100 border-none text-gray-800 placeholder:text-gray-400 rounded-full text-sm md:text-base shadow-neumorphic-inset focus:shadow-neumorphic-inset focus-visible:ring-0 focus-visible:ring-offset-0"
+                className="w-full pl-12 md:pl-14 pr-12 md:pr-14 py-5 md:py-6 bg-gray-100 border-none text-gray-800 placeholder:text-gray-400 rounded-full text-sm md:text-base shadow-neumorphic-inset focus:shadow-neumorphic-inset focus-visible:ring-0 focus-visible:ring-offset-0"
               />
               <Button 
                 type="submit"
-                className="absolute right-2 w-10 h-10 md:w-12 md:h-12 bg-gray-900 hover:bg-gray-800 text-white rounded-full p-0 flex items-center justify-center shadow-lg"
+                className="absolute right-2 md:right-3 w-6 h-6 bg-gray-900 hover:bg-gray-800 text-white rounded-full p-0 flex items-center justify-center shadow-lg"
               >
-                <Disc3 className="w-5 h-5 md:w-6 md:h-6" />
+                <img 
+                  src="/disk-icon.png" 
+                  alt="Submit" 
+                  className="w-4 h-4"
+                />
               </Button>
             </div>
           </form>
