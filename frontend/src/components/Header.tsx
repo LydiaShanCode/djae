@@ -1,4 +1,4 @@
-import { Music2 } from "lucide-react";
+import { Headphones, Disc3 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -31,21 +31,19 @@ const Header = ({ onPlaylistImport }: HeaderProps) => {
 
           {/* Spotify URL Input */}
           <form onSubmit={handleSubmit} className="w-full sm:flex-1 max-w-2xl">
-            <div className="flex gap-2">
-              <div className="flex-1 relative">
-                <Music2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  type="text"
-                  name="spotifyUrl"
-                  placeholder="Paste Spotify playlist URL..."
-                  className="pl-10 bg-gray-100 border-gray-200 text-gray-800 placeholder:text-gray-400 focus:bg-white rounded-full text-sm md:text-base"
-                />
-              </div>
+            <div className="relative flex items-center">
+              <Headphones className="absolute left-4 md:left-5 w-5 h-5 md:w-6 md:h-6 text-gray-400 z-10" />
+              <Input
+                type="text"
+                name="spotifyUrl"
+                placeholder="Paste your playlist link here"
+                className="w-full pl-12 md:pl-14 pr-14 md:pr-16 py-5 md:py-6 bg-gray-100 border-none text-gray-800 placeholder:text-gray-400 rounded-full text-sm md:text-base shadow-neumorphic-inset focus:shadow-neumorphic-inset focus-visible:ring-0 focus-visible:ring-offset-0"
+              />
               <Button 
                 type="submit"
-                className="bg-gray-800 hover:bg-gray-900 text-white rounded-full px-4 md:px-6 text-sm md:text-base"
+                className="absolute right-2 w-10 h-10 md:w-12 md:h-12 bg-gray-900 hover:bg-gray-800 text-white rounded-full p-0 flex items-center justify-center shadow-lg"
               >
-                Load
+                <Disc3 className="w-5 h-5 md:w-6 md:h-6" />
               </Button>
             </div>
           </form>
