@@ -70,7 +70,7 @@ const PlaylistPanel = ({
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <p className="text-xs text-gray-600 mb-1">Now Playing:</p>
               <h3 className="text-sm sm:text-base md:text-lg font-bold text-gray-800 truncate">
                 {currentTrack.title}
@@ -94,7 +94,7 @@ const PlaylistPanel = ({
               onDragEnd={handleDragEnd}
               onClick={() => onTrackSelect(index)}
               className={`
-                group flex items-center gap-2 sm:gap-2.5 md:gap-3 p-3 rounded-lg md:rounded-xl transition-all cursor-move
+                w-full group flex items-center gap-2 sm:gap-2.5 md:gap-3 p-3 rounded-lg md:rounded-xl transition-all cursor-move
                 ${currentTrackId === track.id 
                   ? 'bg-gray-100' 
                   : 'hover:bg-gray-50'
@@ -116,7 +116,7 @@ const PlaylistPanel = ({
               />
 
               {/* Track Info */}
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <h4 className="font-semibold text-gray-800 truncate text-xs sm:text-sm">
                   {track.title}
                 </h4>
