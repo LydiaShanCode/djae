@@ -150,9 +150,9 @@ const Index = () => {
       <Header onPlaylistImport={handlePlaylistImport} />
       
       <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 lg:items-start">
           {/* Left Column - DJ Controller and Player Controls */}
-          <div className="lg:col-span-2 space-y-4 md:space-y-6">
+          <div className="lg:col-span-2 space-y-4 md:space-y-6 flex flex-col">
             <DJController
               currentTrack={currentTrack}
               upcomingTracks={upcomingTracks}
@@ -172,15 +172,17 @@ const Index = () => {
           </div>
 
           {/* Right Column - Playlist Panel */}
-          <div className="lg:col-span-1 min-h-[400px] lg:min-h-0">
-            <PlaylistPanel
-              playlistTitle={playlist.title}
-              tracks={playlist.tracks}
-              totalDuration={playlist.totalDuration}
-              currentTrackId={currentTrack?.id || null}
-              onReorder={handleReorder}
-              onTrackSelect={handleTrackSelect}
-            />
+          <div className="lg:col-span-1 lg:sticky lg:top-24 lg:self-start">
+            <div className="h-[600px] lg:h-[calc(100vh-12rem)]">
+              <PlaylistPanel
+                playlistTitle={playlist.title}
+                tracks={playlist.tracks}
+                totalDuration={playlist.totalDuration}
+                currentTrackId={currentTrack?.id || null}
+                onReorder={handleReorder}
+                onTrackSelect={handleTrackSelect}
+              />
+            </div>
           </div>
         </div>
       </div>
