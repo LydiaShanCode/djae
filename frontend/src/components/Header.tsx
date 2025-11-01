@@ -41,12 +41,12 @@ const Header = ({ onPlaylistImport }: HeaderProps) => {
               />
               <Button 
                 type="submit"
-                className="absolute right-2 md:right-3 w-6 h-6 bg-gray-900 hover:bg-gray-800 text-white rounded-full p-0 flex items-center justify-center shadow-lg"
+                className="absolute right-2 md:right-3 w-[30px] h-[30px] bg-gray-900 hover:bg-gray-800 text-white rounded-full p-0 flex items-center justify-center shadow-lg transition-transform duration-500 hover:rotate-180"
               >
                 <img 
                   src="/disk-icon.png" 
                   alt="Submit" 
-                  className="w-4 h-4"
+                  className="w-5 h-5"
                 />
               </Button>
             </div>
