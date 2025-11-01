@@ -30,7 +30,7 @@ const Waveform = ({ progress = 0, isPlaying = false, barCount = 80, trackId = "d
 
   return (
     <div className="relative h-16 rounded-lg overflow-hidden">
-      {/* Unplayed section - light grey background with grey bars (full width, behind played section) */}
+      {/* Unplayed section - light grey background with grey bars (full width) */}
       <div className="absolute top-0 left-0 w-full h-full bg-gray-100 flex items-center px-2">
         <div className="flex items-center gap-0.5 h-full w-full">
           {barHeights.map((height, i) => (
@@ -46,24 +46,15 @@ const Waveform = ({ progress = 0, isPlaying = false, barCount = 80, trackId = "d
         </div>
       </div>
 
-      {/* Played section - dark grey background with light blue bars (grows with progress) */}
+      {/* Played section - dark overlay with difference blend mode */}
       <div 
-        className="absolute top-0 left-0 h-full bg-gray-800 flex items-center px-2 transition-all duration-300 ease-linear overflow-hidden"
-        style={{ width: `${progress}%` }}
-      >
-        <div className="flex items-center gap-0.5 h-full" style={{ width: `${100 / (progress / 100)}%` }}>
-          {barHeights.map((height, i) => (
-            <div
-              key={`played-${i}`}
-              className="flex-1 bg-blue-400 rounded-full"
-              style={{
-                height: `${height}%`,
-                opacity: isPlaying ? 1 : 0.7,
-              }}
-            />
-          ))}
-        </div>
-      </div>
+        className="absolute top-0 left-0 h-full bg-gray-800 transition-all duration-300 ease-linear"
+        style={{ 
+          width: `${progress}%`,
+          mixBlendMode: 'difference',
+          opacity: isPlaying ? 1 : 0.7,
+        }}
+      />
     </div>
   );
 };
