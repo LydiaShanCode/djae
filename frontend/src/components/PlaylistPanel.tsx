@@ -61,8 +61,8 @@ const PlaylistPanel = ({
     <div className="bg-white rounded-2xl md:rounded-3xl shadow-neumorphic h-full flex flex-col overflow-hidden">
       {/* Now Playing Card */}
       {currentTrack && (
-        <div className="p-3 sm:p-4 md:p-6 border-b border-gray-200">
-          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl md:rounded-2xl p-3 md:p-4 flex items-center gap-3 md:gap-4">
+        <div className="p-4 border-b border-gray-200">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl md:rounded-2xl p-3 flex items-center gap-3 md:gap-4">
             <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-lg md:rounded-xl overflow-hidden shadow-lg flex-shrink-0">
               <img
                 src={currentTrack.albumArtUrl}
@@ -83,7 +83,7 @@ const PlaylistPanel = ({
 
       {/* Track List */}
       <ScrollArea className="flex-1">
-        <div className="p-2 sm:p-3 md:p-4 lg:p-6 space-y-0.5 sm:space-y-1 md:space-y-1.5">
+        <div className="p-4 space-y-1">
           {tracks.map((track, index) => (
             <div
               key={track.id}
@@ -94,7 +94,7 @@ const PlaylistPanel = ({
               onDragEnd={handleDragEnd}
               onClick={() => onTrackSelect(index)}
               className={`
-                group flex items-center gap-2 sm:gap-2.5 md:gap-3 p-2 sm:p-2.5 md:p-3 rounded-lg md:rounded-xl transition-all cursor-move
+                group flex items-center gap-2 sm:gap-2.5 md:gap-3 p-3 rounded-lg md:rounded-xl transition-all cursor-move
                 ${currentTrackId === track.id 
                   ? 'bg-gray-100' 
                   : 'hover:bg-gray-50'
