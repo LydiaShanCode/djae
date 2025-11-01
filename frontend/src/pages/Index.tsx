@@ -12,7 +12,9 @@ const Index = () => {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [recordingTime, setRecordingTime] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const currentTrack = playlist.tracks[currentTrackIndex] || null;
   const upcomingTracks = playlist.tracks.slice(currentTrackIndex + 1);
@@ -41,6 +43,32 @@ const Index = () => {
       }
     };
   }, [isPlaying, currentTrack]);
+
+  // Recording timer
+  useEffect(() => {
+    if (isPlaying) {
+      recordingIntervalRef.current = setInterval(() => {
+        setRecordingTime((prev) => prev + 1);
+      }, 1000);
+    } else {
+      if (recordingIntervalRef.current) {
+        clearInterval(recordingIntervalRef.current);
+      }
+    }
+
+    return () => {
+      if (recordingIntervalRef.current) {
+        clearInterval(recordingIntervalRef.current);
+      }
+    };
+  }, [isPlaying]);
+
+  const formatRecordingTime = (seconds: number): string => {
+    const hours = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hours}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -123,6 +151,8 @@ const Index = () => {
               currentTrack={currentTrack}
               upcomingTracks={upcomingTracks}
               isPlaying={isPlaying}
+              playlistTitle={playlist.title}
+              recordingTime={formatRecordingTime(recordingTime)}
             />
             
             <MusicPlayerControls
