@@ -1,4 +1,4 @@
-import { Headphones } from "lucide-react";
+import { Headphones, Music } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -29,28 +29,40 @@ const Header = ({ onPlaylistImport }: HeaderProps) => {
             />
           </div>
 
-          {/* Spotify URL Input */}
-          <form onSubmit={handleSubmit} className="w-full sm:flex-1 max-w-2xl">
-            <div className="relative flex items-center">
-              <Headphones className="absolute left-4 md:left-5 w-5 h-5 md:w-6 md:h-6 text-gray-400 z-10" />
-              <Input
-                type="text"
-                name="spotifyUrl"
-                placeholder="Paste your playlist link here"
-                className="w-full pl-12 md:pl-14 pr-12 md:pr-14 py-5 md:py-6 bg-gray-100 border-none text-gray-800 placeholder:text-gray-400 rounded-full text-sm md:text-base shadow-neumorphic-inset focus:shadow-neumorphic-inset focus-visible:ring-0 focus-visible:ring-offset-0"
-              />
-              <Button 
-                type="submit"
-                className="absolute right-2 md:right-3 w-[30px] h-[30px] bg-gray-900 hover:bg-gray-800 text-white rounded-full p-0 flex items-center justify-center shadow-lg group"
-              >
-                <img 
-                  src="/disk-icon.png" 
-                  alt="Submit" 
-                  className="w-5 h-5 group-hover:animate-spin"
+          {/* Spotify URL Input and Playlist Chip */}
+          <div className="w-full sm:flex-1 flex items-center gap-3 md:gap-4 max-w-3xl">
+            <form onSubmit={handleSubmit} className="flex-1">
+              <div className="relative flex items-center">
+                <Headphones className="absolute left-4 md:left-5 w-5 h-5 md:w-6 md:h-6 text-gray-400 z-10" />
+                <Input
+                  type="text"
+                  name="spotifyUrl"
+                  placeholder="Paste your playlist link here"
+                  className="w-full pl-12 md:pl-14 pr-12 md:pr-14 py-5 md:py-6 bg-gray-100 border-none text-gray-800 placeholder:text-gray-400 rounded-full text-sm md:text-base shadow-neumorphic-inset focus:shadow-neumorphic-inset focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
-              </Button>
+                <Button 
+                  type="submit"
+                  className="absolute right-2 md:right-3 w-[30px] h-[30px] bg-gray-900 hover:bg-gray-800 text-white rounded-full p-0 flex items-center justify-center shadow-lg group"
+                >
+                  <img 
+                    src="/disk-icon.png" 
+                    alt="Submit" 
+                    className="w-5 h-5 group-hover:animate-spin"
+                  />
+                </Button>
+              </div>
+            </form>
+
+            {/* Playlist Chip */}
+            <div className="hidden lg:flex items-center gap-3 px-4 py-2.5 bg-white border-2 border-dashed border-gray-300 rounded-full">
+              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                <Music className="w-5 h-5 text-gray-400" />
+              </div>
+              <span className="text-gray-400 text-sm font-medium whitespace-nowrap">
+                Your playlist
+              </span>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </header>
