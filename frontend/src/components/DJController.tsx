@@ -1,5 +1,6 @@
 import { Track } from "@/data/mockPlaylist";
 import VinylDeck from "./VinylDeck";
+import SongBlock from "./SongBlock";
 
 interface DJControllerProps {
   currentTrack: Track | null;
@@ -19,6 +20,9 @@ const DJController = ({
   recordingTime = "1:00:49"
 }: DJControllerProps) => {
   const nextTrack = upcomingTracks[0] || null;
+  
+  // Mock progress for demonstration (in real app, this would come from audio player)
+  const currentProgress = 45; // 45% played
 
   return (
     <div className="bg-white rounded-3xl p-6 md:p-8 shadow-lg">
@@ -60,36 +64,12 @@ const DJController = ({
       {/* Track Info Cards and Center Controls */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 mb-8">
         {/* Left Track Card */}
-        <div className="border-2 border-dashed border-gray-300 rounded-2xl p-6">
-          {currentTrack && (
-            <>
-              <h3 className="text-2xl font-bold text-gray-900 mb-1">
-                {currentTrack.title}
-              </h3>
-              <p className="text-lg text-gray-400 mb-3">{currentTrack.artist}</p>
-              <div className="flex items-center gap-3 text-sm text-gray-600">
-                <span className="px-2 py-1 bg-gray-100 rounded">10B</span>
-                <span className="px-2 py-1 bg-gray-100 rounded">79</span>
-              </div>
-              
-              {/* Waveform */}
-              <div className="mt-4 h-16 bg-gray-900 rounded-lg flex items-center px-2">
-                <div className="flex items-center gap-0.5 h-full w-full">
-                  {Array.from({ length: 80 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="flex-1 bg-white rounded-full"
-                      style={{
-                        height: `${20 + Math.random() * 80}%`,
-                        opacity: isPlaying && i < 40 ? 1 : 0.3,
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-        </div>
+        <SongBlock 
+          track={currentTrack} 
+          isPlaying={isPlaying} 
+          isCurrentTrack={true}
+          progress={currentProgress}
+        />
 
         {/* Center Knobs */}
         <div className="flex flex-col items-center justify-center gap-6 px-8">
@@ -123,36 +103,12 @@ const DJController = ({
         </div>
 
         {/* Right Track Card */}
-        <div className="border-2 border-dashed border-gray-300 rounded-2xl p-6">
-          {nextTrack && (
-            <>
-              <h3 className="text-2xl font-bold text-gray-900 mb-1">
-                {nextTrack.title}
-              </h3>
-              <p className="text-lg text-gray-400 mb-3">{nextTrack.artist}</p>
-              <div className="flex items-center gap-3 text-sm text-gray-600">
-                <span className="px-2 py-1 bg-gray-100 rounded">10B</span>
-                <span className="px-2 py-1 bg-gray-100 rounded">79</span>
-              </div>
-              
-              {/* Waveform */}
-              <div className="mt-4 h-16 bg-gray-200 rounded-lg flex items-center px-2">
-                <div className="flex items-center gap-0.5 h-full w-full">
-                  {Array.from({ length: 80 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="flex-1 bg-gray-400 rounded-full"
-                      style={{
-                        height: `${20 + Math.random() * 80}%`,
-                        opacity: 0.3,
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-        </div>
+        <SongBlock 
+          track={nextTrack} 
+          isPlaying={false} 
+          isCurrentTrack={false}
+          progress={0}
+        />
       </div>
 
       {/* Turntable Decks */}
