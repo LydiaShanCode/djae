@@ -9,7 +9,7 @@ const Stylus = ({ isPlaying, side }: StylusProps) => {
   const rotation = isPlaying ? (side === "left" ? -45 : 45) : 0;
   
   return (
-    <div className={`absolute top-8 ${side === "left" ? "right-8" : "left-8"}`}>
+    <div className="absolute top-8 right-8">
       <div className="relative w-40 h-2">
         {/* Arm base (top circle) */}
         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-gradient-to-br from-gray-300 to-gray-400 rounded-full shadow-lg z-10"></div>
