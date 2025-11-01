@@ -70,7 +70,7 @@ const PlaylistPanel = ({
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1">
               <p className="text-xs text-gray-600 mb-1">Now Playing:</p>
               <h3 className="text-sm sm:text-base md:text-lg font-bold text-gray-800 truncate">
                 {currentTrack.title}
@@ -116,7 +116,7 @@ const PlaylistPanel = ({
               />
 
               {/* Track Info */}
-              <div className="flex-1 min-w-0">
+              <div className="flex-1">
                 <h4 className="font-semibold text-gray-800 truncate text-xs sm:text-sm">
                   {track.title}
                 </h4>
