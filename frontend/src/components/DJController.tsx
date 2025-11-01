@@ -6,6 +6,7 @@ interface DJControllerProps {
   upcomingTracks: Track[];
   isPlaying: boolean;
   playlistTitle?: string;
+  playlistImage?: string;
   recordingTime?: string;
 }
 
@@ -14,27 +15,45 @@ const DJController = ({
   upcomingTracks, 
   isPlaying,
   playlistTitle = "Performative Male",
+  playlistImage,
   recordingTime = "1:00:49"
 }: DJControllerProps) => {
   const nextTrack = upcomingTracks[0] || null;
 
   return (
     <div className="bg-white rounded-3xl p-6 md:p-8 shadow-lg">
-      {/* Header - Playing from and Recording time */}
+      {/* Header - Playing from and Live Badge */}
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3 px-4 py-2 border-2 border-gray-200 rounded-full">
+        {/* Playing from chip */}
+        <div className="flex items-center gap-3 px-4 py-2.5 border border-gray-200 rounded-full bg-white">
           <span className="text-sm text-gray-500">Playing from</span>
+          <div className="w-px h-4 bg-gray-200"></div>
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 bg-green-400 rounded flex items-center justify-center text-xs">
-              🎵
-            </div>
-            <span className="text-sm font-medium text-gray-800">{playlistTitle}</span>
+            <img 
+              src={playlistImage || currentTrack?.albumArtUrl || "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&h=100&fit=crop"} 
+              alt={playlistTitle}
+              className="w-6 h-6 rounded-full object-cover"
+            />
+            <span className="text-sm font-medium text-gray-900">{playlistTitle}</span>
           </div>
         </div>
         
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-          <span className="text-sm text-gray-600">{recordingTime}</span>
+        {/* Live Badge */}
+        <div className="flex items-center gap-3 px-4 py-2.5 border border-gray-200 rounded-full bg-white">
+          <div className="relative flex items-center justify-center">
+            {/* Outer glow ring - only visible when playing */}
+            {isPlaying && (
+              <div className="absolute inset-0 w-10 h-10 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                <div className="w-full h-full rounded-full bg-red-500/30 animate-ping"></div>
+              </div>
+            )}
+            {/* Inner glow ring */}
+            <div className={`relative w-8 h-8 rounded-full flex items-center justify-center ${isPlaying ? 'bg-red-500/20' : 'bg-gray-200'}`}>
+              {/* Red dot */}
+              <div className={`w-4 h-4 rounded-full ${isPlaying ? 'bg-red-500' : 'bg-gray-400'}`}></div>
+            </div>
+          </div>
+          <span className="text-sm font-mono text-gray-600 tabular-nums">{recordingTime}</span>
         </div>
       </div>
 

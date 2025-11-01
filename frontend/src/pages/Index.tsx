@@ -18,6 +18,7 @@ const Index = () => {
 
   const currentTrack = playlist.tracks[currentTrackIndex] || null;
   const upcomingTracks = playlist.tracks.slice(currentTrackIndex + 1);
+  const playlistImage = playlist.tracks[0]?.albumArtUrl;
 
   // Simulate playback progress
   useEffect(() => {
@@ -152,6 +153,7 @@ const Index = () => {
               upcomingTracks={upcomingTracks}
               isPlaying={isPlaying}
               playlistTitle={playlist.title}
+              playlistImage={playlistImage}
               recordingTime={formatRecordingTime(recordingTime)}
             />
             
