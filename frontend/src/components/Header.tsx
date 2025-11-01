@@ -54,9 +54,9 @@ const Header = ({ onPlaylistImport }: HeaderProps) => {
             </form>
 
             {/* Playlist Chip */}
-            <div className="hidden lg:flex items-center gap-3 px-4 py-2.5 bg-white border-2 border-dashed border-gray-300 rounded-full">
-              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
-                <Music className="w-5 h-5 text-gray-400" />
+            <div className="hidden lg:flex items-center gap-3 px-4 py-5 md:py-6 bg-white border-2 border-dashed border-gray-300 rounded-full">
+              <div className="w-[30px] h-[30px] rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                <Music className="w-4 h-4 text-gray-400" />
               </div>
               <span className="text-gray-400 text-sm font-medium whitespace-nowrap">
                 Your playlist
