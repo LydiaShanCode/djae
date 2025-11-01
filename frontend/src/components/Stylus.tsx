@@ -5,8 +5,8 @@ interface StylusProps {
 
 const Stylus = ({ isPlaying, side }: StylusProps) => {
   // When not playing: 0deg (straight down)
-  // When playing: -30deg for left, 30deg for right
-  const rotation = isPlaying ? (side === "left" ? -30 : 30) : 0;
+  // When playing: -45deg for left, 45deg for right (needle touches disk)
+  const rotation = isPlaying ? (side === "left" ? -45 : 45) : 0;
   
   return (
     <div className={`absolute top-8 ${side === "left" ? "right-8" : "left-8"}`}>
