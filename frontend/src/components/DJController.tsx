@@ -4,8 +4,10 @@ import SongBlock from "./SongBlock";
 
 interface DJControllerProps {
   currentTrack: Track | null;
+  nextTrack: Track | null;
   upcomingTracks: Track[];
   isPlaying: boolean;
+  activeDeck: "left" | "right";
   playlistTitle?: string;
   playlistImage?: string;
   recordingTime?: string;
@@ -13,15 +15,27 @@ interface DJControllerProps {
 }
 
 const DJController = ({ 
-  currentTrack, 
+  currentTrack,
+  nextTrack,
   upcomingTracks, 
   isPlaying,
+  activeDeck,
   playlistTitle = "Performative Male",
   playlistImage,
   recordingTime = "1:00:49",
   currentProgress = 0
 }: DJControllerProps) => {
-  const nextTrack = upcomingTracks[0] || null;
+  // Determine which track goes on which deck based on active deck
+  const leftDeckTrack = activeDeck === "left" ? currentTrack : nextTrack;
+  const rightDeckTrack = activeDeck === "right" ? currentTrack : nextTrack;
+  
+  // Determine which deck is playing
+  const leftDeckPlaying = activeDeck === "left" && isPlaying;
+  const rightDeckPlaying = activeDeck === "right" && isPlaying;
+
+  // For the song blocks, show current track on active side, next track on inactive side
+  const leftBlockTrack = activeDeck === "left" ? currentTrack : nextTrack;
+  const rightBlockTrack = activeDeck === "right" ? currentTrack : nextTrack;
 
   return (
     <div className="bg-white rounded-3xl p-6 md:p-8 shadow-lg">
@@ -64,10 +78,10 @@ const DJController = ({
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 mb-8">
         {/* Left Track Card */}
         <SongBlock 
-          track={currentTrack} 
-          isPlaying={isPlaying} 
-          isCurrentTrack={true}
-          progress={currentProgress}
+          track={leftBlockTrack} 
+          isPlaying={leftDeckPlaying} 
+          isCurrentTrack={activeDeck === "left"}
+          progress={activeDeck === "left" ? currentProgress : 0}
         />
 
         {/* Center Knobs */}
@@ -96,24 +110,29 @@ const DJController = ({
           {/* Crossfader */}
           <div className="w-48 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl shadow-neumorphic-inset flex items-center justify-center p-4">
             <div className="relative w-full h-12 bg-gray-300 rounded-lg shadow-inner">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-10 bg-white rounded-lg shadow-lg"></div>
+              <div 
+                className="absolute top-1/2 -translate-y-1/2 w-16 h-10 bg-white rounded-lg shadow-lg transition-all duration-300"
+                style={{ 
+                  left: activeDeck === "left" ? "0%" : "calc(100% - 4rem)"
+                }}
+              ></div>
             </div>
           </div>
         </div>
 
         {/* Right Track Card */}
         <SongBlock 
-          track={nextTrack} 
-          isPlaying={false} 
-          isCurrentTrack={false}
-          progress={0}
+          track={rightBlockTrack} 
+          isPlaying={rightDeckPlaying} 
+          isCurrentTrack={activeDeck === "right"}
+          progress={activeDeck === "right" ? currentProgress : 0}
         />
       </div>
 
       {/* Turntable Decks */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <VinylDeck track={currentTrack} isPlaying={isPlaying} side="left" />
-        <VinylDeck track={nextTrack} isPlaying={false} side="right" />
+        <VinylDeck track={leftDeckTrack} isPlaying={leftDeckPlaying} side="left" />
+        <VinylDeck track={rightDeckTrack} isPlaying={rightDeckPlaying} side="right" />
       </div>
     </div>
   );

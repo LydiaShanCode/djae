@@ -13,10 +13,12 @@ const Index = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [recordingTime, setRecordingTime] = useState(0);
+  const [activeDeck, setActiveDeck] = useState<"left" | "right">("left");
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const currentTrack = playlist.tracks[currentTrackIndex] || null;
+  const nextTrack = playlist.tracks[currentTrackIndex + 1] || null;
   const upcomingTracks = playlist.tracks.slice(currentTrackIndex + 1);
   const playlistImage = playlist.tracks[0]?.albumArtUrl;
 
@@ -90,6 +92,8 @@ const Index = () => {
     if (currentTrackIndex < playlist.tracks.length - 1) {
       setCurrentTrackIndex(currentTrackIndex + 1);
       setCurrentTime(0);
+      // Toggle the active deck so next track plays on the deck it was queued on
+      setActiveDeck(activeDeck === "left" ? "right" : "left");
       toast({
         title: "Track skipped",
         description: `Now playing: ${playlist.tracks[currentTrackIndex + 1]?.title}`,
@@ -108,6 +112,8 @@ const Index = () => {
     if (currentTrackIndex > 0) {
       setCurrentTrackIndex(currentTrackIndex - 1);
       setCurrentTime(0);
+      // Toggle the active deck when going backwards too
+      setActiveDeck(activeDeck === "left" ? "right" : "left");
       toast({
         title: "Previous track",
         description: `Now playing: ${playlist.tracks[currentTrackIndex - 1]?.title}`,
@@ -139,6 +145,9 @@ const Index = () => {
     setCurrentTrackIndex(trackIndex);
     setCurrentTime(0);
     setIsPlaying(true);
+    // Determine which deck should be active based on the track index
+    // Even indices = left, odd indices = right
+    setActiveDeck(trackIndex % 2 === 0 ? "left" : "right");
     toast({
       title: "Track selected",
       description: `Now playing: ${playlist.tracks[trackIndex]?.title}`,
@@ -155,8 +164,10 @@ const Index = () => {
           <div className="lg:col-span-2 space-y-4 md:space-y-6 flex flex-col">
             <DJController
               currentTrack={currentTrack}
+              nextTrack={nextTrack}
               upcomingTracks={upcomingTracks}
               isPlaying={isPlaying}
+              activeDeck={activeDeck}
               playlistTitle={playlist.title}
               playlistImage={playlistImage}
               recordingTime={formatRecordingTime(recordingTime)}
