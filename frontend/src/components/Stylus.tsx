@@ -7,16 +7,16 @@ const Stylus = ({ isPlaying, side }: StylusProps) => {
   // Different positioning and rotation for left vs right deck
   const stylusConfig = side === "left" 
     ? {
-        // Left deck: stylus comes from right side, positioned at top
+        // Left deck: stylus on right side, positioned at top
         containerClass: "right-8 top-12",
         armRotation: isPlaying ? "rotate-[-25deg]" : "rotate-[15deg]",
         originClass: "origin-top-right"
       }
     : {
-        // Right deck: stylus comes from left side, positioned at top
-        containerClass: "left-8 top-12",
+        // Right deck: stylus on right side, positioned at top
+        containerClass: "right-8 top-12",
         armRotation: isPlaying ? "rotate-[-25deg]" : "rotate-[15deg]",
-        originClass: "origin-top-left"
+        originClass: "origin-top-right"
       };
 
   return (
