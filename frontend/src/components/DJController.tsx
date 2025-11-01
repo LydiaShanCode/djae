@@ -9,6 +9,7 @@ interface DJControllerProps {
   playlistTitle?: string;
   playlistImage?: string;
   recordingTime?: string;
+  currentProgress?: number;
 }
 
 const DJController = ({ 
@@ -17,12 +18,10 @@ const DJController = ({
   isPlaying,
   playlistTitle = "Performative Male",
   playlistImage,
-  recordingTime = "1:00:49"
+  recordingTime = "1:00:49",
+  currentProgress = 0
 }: DJControllerProps) => {
   const nextTrack = upcomingTracks[0] || null;
-  
-  // Mock progress for demonstration (in real app, this would come from audio player)
-  const currentProgress = 45; // 45% played
 
   return (
     <div className="bg-white rounded-3xl p-6 md:p-8 shadow-lg">

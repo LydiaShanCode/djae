@@ -20,6 +20,11 @@ const Index = () => {
   const upcomingTracks = playlist.tracks.slice(currentTrackIndex + 1);
   const playlistImage = playlist.tracks[0]?.albumArtUrl;
 
+  // Calculate progress percentage
+  const currentProgress = currentTrack 
+    ? (currentTime / currentTrack.duration) * 100 
+    : 0;
+
   // Simulate playback progress
   useEffect(() => {
     if (isPlaying && currentTrack) {
@@ -155,6 +160,7 @@ const Index = () => {
               playlistTitle={playlist.title}
               playlistImage={playlistImage}
               recordingTime={formatRecordingTime(recordingTime)}
+              currentProgress={currentProgress}
             />
             
             <MusicPlayerControls
