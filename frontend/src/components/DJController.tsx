@@ -24,8 +24,8 @@ const DJController = ({
     <div className="bg-white rounded-3xl p-6 md:p-8 shadow-lg">
       {/* Header - Playing from and Live Badge */}
       <div className="flex items-center justify-between mb-6">
-        {/* Playing from chip - 30px height */}
-        <div className="flex items-center gap-2 px-3 py-1.5 border border-gray-200 rounded-full bg-white h-[30px]">
+        {/* Playing from chip - 30px height, 3px padding on right (icon side) */}
+        <div className="flex items-center gap-2 pl-3 pr-[3px] py-1.5 border border-gray-200 rounded-full bg-white h-[30px]">
           <span className="text-xs text-gray-500">Playing from</span>
           <div className="w-px h-3 bg-gray-200"></div>
           <div className="flex items-center gap-1.5">
@@ -38,8 +38,8 @@ const DJController = ({
           </div>
         </div>
         
-        {/* Live Badge - 30px height */}
-        <div className="flex items-center gap-2 px-3 py-1.5 border border-gray-200 rounded-full bg-white h-[30px]">
+        {/* Live Badge - 30px height, 3px padding on left (icon side) */}
+        <div className="flex items-center gap-2 pl-[3px] pr-3 py-1.5 border border-gray-200 rounded-full bg-white h-[30px]">
           <div className="relative flex items-center justify-center">
             {/* Outer glow ring - only visible when playing */}
             {isPlaying && (
