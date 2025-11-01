@@ -31,7 +31,7 @@ const Header = ({ onPlaylistImport }: HeaderProps) => {
 
           {/* Spotify URL Input and Playlist Chip */}
           <div className="w-full sm:flex-1 flex items-center gap-3 md:gap-4 max-w-3xl">
-            <form onSubmit={handleSubmit} className="flex-1">
+            <form onSubmit={handleSubmit} className="flex-1 max-w-[487px]">
               <div className="relative flex items-center">
                 <Headphones className="absolute left-4 md:left-5 w-5 h-5 md:w-6 md:h-6 text-gray-400 z-10" />
                 <Input
