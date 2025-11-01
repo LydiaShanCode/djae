@@ -15,7 +15,7 @@ const Stylus = ({ isPlaying, side }: StylusProps) => {
     : {
         // Right deck: stylus comes from left side
         containerClass: "left-8 top-1/2 -translate-y-1/2",
-        armRotation: isPlaying ? "rotate-[25deg]" : "rotate-[-15deg]",
+        armRotation: isPlaying ? "rotate-[-25deg]" : "rotate-[15deg]",
         originClass: "origin-top-left"
       };
 
