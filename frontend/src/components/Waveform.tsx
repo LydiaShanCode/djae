@@ -1,12 +1,32 @@
+import { useMemo } from "react";
+
 interface WaveformProps {
   progress?: number; // 0-100 percentage of track played
   isPlaying?: boolean;
   barCount?: number;
+  trackId?: string; // Used to generate consistent waveform per track
 }
 
-const Waveform = ({ progress = 0, isPlaying = false, barCount = 80 }: WaveformProps) => {
-  // Generate random heights for waveform bars
-  const barHeights = Array.from({ length: barCount }, () => 20 + Math.random() * 80);
+const Waveform = ({ progress = 0, isPlaying = false, barCount = 80, trackId = "default" }: WaveformProps) => {
+  // Generate consistent waveform data based on trackId
+  // This simulates the amplitude data from an actual MP3 file
+  const barHeights = useMemo(() => {
+    // Use trackId to seed consistent "random" heights for each track
+    const seed = trackId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    
+    return Array.from({ length: barCount }, (_, i) => {
+      // Create a pseudo-random but consistent pattern
+      const x = (seed + i) * 0.5;
+      const wave1 = Math.sin(x * 0.1) * 30;
+      const wave2 = Math.sin(x * 0.3) * 20;
+      const wave3 = Math.sin(x * 0.05) * 15;
+      const noise = ((seed + i * 7) % 20) - 10;
+      
+      // Combine waves to create realistic audio-like pattern
+      const height = 40 + wave1 + wave2 + wave3 + noise;
+      return Math.max(15, Math.min(95, height)); // Clamp between 15-95%
+    });
+  }, [trackId, barCount]);
   
   // Calculate which bar index represents the current playback position
   const playedBars = Math.floor((progress / 100) * barCount);
@@ -15,14 +35,14 @@ const Waveform = ({ progress = 0, isPlaying = false, barCount = 80 }: WaveformPr
     <div className="relative h-16 rounded-lg overflow-hidden">
       {/* Played section - dark grey background with light blue bars */}
       <div 
-        className="absolute top-0 left-0 h-full bg-gray-800 flex items-center px-2 transition-all duration-300"
+        className="absolute top-0 left-0 h-full bg-gray-800 flex items-center px-2 transition-all duration-300 ease-linear"
         style={{ width: `${progress}%` }}
       >
         <div className="flex items-center gap-0.5 h-full w-full">
           {barHeights.slice(0, playedBars).map((height, i) => (
             <div
               key={`played-${i}`}
-              className="flex-1 bg-blue-400 rounded-full transition-all duration-150"
+              className="flex-1 bg-blue-400 rounded-full"
               style={{
                 height: `${height}%`,
                 opacity: isPlaying ? 1 : 0.7,

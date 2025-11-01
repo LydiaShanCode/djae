@@ -33,6 +33,7 @@ const SongBlock = ({ track, isPlaying = false, isCurrentTrack = false, progress 
         <Waveform 
           progress={isCurrentTrack ? progress : 0} 
           isPlaying={isPlaying && isCurrentTrack}
+          trackId={track.id}
         />
       </div>
     </div>
