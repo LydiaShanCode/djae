@@ -18,10 +18,10 @@ class Settings(BaseSettings):
     # Spotify API settings
     spotify_client_id: str
     spotify_client_secret: str
-    spotify_redirect_uri: str
+    spotify_redirect_uri: str = ""
     
     # Frontend settings
-    frontend_url: str
+    frontend_url: str = ""
     
     # CORS settings
     cors_origins: str = "http://localhost:5173,http://localhost:3000"

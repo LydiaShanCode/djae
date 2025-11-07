@@ -5,6 +5,7 @@ import MusicPlayerControls from "@/components/MusicPlayerControls";
 import PlaylistPanel from "@/components/PlaylistPanel";
 import { mockPlaylist, Track, Playlist } from "@/data/mockPlaylist";
 import { useToast } from "@/hooks/use-toast";
+import { getApiUrl } from "@/config/api";
 
 // Spotify SDK types
 interface SpotifyPlayer {
@@ -120,7 +121,7 @@ const Index = () => {
     const initializePlayer = async () => {
       try {
         // Fetch access token from backend
-        const response = await fetch(`http://localhost:8000/api/v1/auth/token/${sessionId}`);
+        const response = await fetch(getApiUrl(`/api/v1/auth/token/${sessionId}`));
         if (!response.ok) {
           console.error("Failed to fetch access token");
           toast({
@@ -199,7 +200,7 @@ const Index = () => {
         
         // Transfer playback to this device
         try {
-          const response = await fetch("http://localhost:8000/api/v1/playback/transfer", {
+          const response = await fetch(getApiUrl("/api/v1/playback/transfer"), {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -349,7 +350,7 @@ const Index = () => {
             const playlistUri = `spotify:playlist:${playlist.id}`;
             console.log("Starting playback with playlist URI:", playlistUri);
             
-            const playResponse = await fetch("http://localhost:8000/api/v1/playback/play", {
+            const playResponse = await fetch(getApiUrl("/api/v1/playback/play"), {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -487,7 +488,7 @@ const Index = () => {
       // Get session_id from localStorage if user is authenticated
       const sessionId = localStorage.getItem("session_id");
       
-      const response = await fetch("http://localhost:8000/api/v1/playlists/import", {
+      const response = await fetch(getApiUrl("/api/v1/playlists/import"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

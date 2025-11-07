@@ -1,6 +1,7 @@
 import { Headphones, Music, LogOut } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { getApiUrl } from "@/config/api";
 
 interface HeaderProps {
   onPlaylistImport: (url: string) => void;
@@ -69,7 +70,7 @@ const Header = ({ onPlaylistImport, isLoggedIn = false }: HeaderProps) => {
           <div className="flex items-center">
             {!isLoggedIn ? (
               <a
-                href="http://localhost:8000/api/v1/auth/login"
+                href={getApiUrl("/api/v1/auth/login")}
                 className="bg-[#1DB954] hover:bg-[#1ed760] text-white font-semibold px-4 py-2 rounded-full flex items-center gap-2 shadow-lg transition-colors"
               >
                 <Music className="w-4 h-4" />
