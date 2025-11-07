@@ -1,12 +1,13 @@
-import { Headphones, Music } from "lucide-react";
+import { Headphones, Music, LogOut } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 interface HeaderProps {
   onPlaylistImport: (url: string) => void;
+  isLoggedIn?: boolean;
 }
 
-const Header = ({ onPlaylistImport }: HeaderProps) => {
+const Header = ({ onPlaylistImport, isLoggedIn = false }: HeaderProps) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -64,8 +65,31 @@ const Header = ({ onPlaylistImport }: HeaderProps) => {
             </div>
           </div>
 
-          {/* Right spacer for balance */}
-          <div className="hidden lg:block w-[44px]"></div>
+          {/* Login with Spotify Button / Logout Button */}
+          <div className="flex items-center">
+            {!isLoggedIn ? (
+              <a
+                href="http://localhost:8000/api/v1/auth/login"
+                className="bg-[#1DB954] hover:bg-[#1ed760] text-white font-semibold px-4 py-2 rounded-full flex items-center gap-2 shadow-lg transition-colors"
+              >
+                <Music className="w-4 h-4" />
+                <span className="hidden md:inline">Login with Spotify</span>
+                <span className="md:hidden">Login</span>
+              </a>
+            ) : (
+              <Button
+                onClick={() => {
+                  localStorage.removeItem('session_id');
+                  window.location.reload();
+                }}
+                className="bg-gray-900 hover:bg-gray-800 text-white font-semibold px-4 py-2 rounded-full flex items-center gap-2 shadow-lg transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden md:inline">Logout</span>
+                <span className="md:hidden">Logout</span>
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </header>

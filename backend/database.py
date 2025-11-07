@@ -1,5 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from typing import Optional
+import certifi
 
 # Global MongoDB client instance
 mongodb_client: Optional[AsyncIOMotorClient] = None
@@ -14,7 +15,11 @@ async def connect_to_mongodb(mongodb_uri: str):
     """
     global mongodb_client
     try:
-        mongodb_client = AsyncIOMotorClient(mongodb_uri, serverSelectionTimeoutMS=5000)
+        mongodb_client = AsyncIOMotorClient(
+            mongodb_uri,
+            serverSelectionTimeoutMS=5000,
+            tlsCAFile=certifi.where()
+        )
         # Test the connection
         await mongodb_client.admin.command('ping')
         print("Connected to MongoDB Atlas")
