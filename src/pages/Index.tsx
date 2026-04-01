@@ -25,6 +25,7 @@ const Index = () => {
   const [isLoadingDefault, setIsLoadingDefault] = useState(true);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const isPlayingRef = useRef(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [recordingTime, setRecordingTime] = useState(0);
   const [activeDeck, setActiveDeck] = useState<"left" | "right">("left");
@@ -56,6 +57,11 @@ const Index = () => {
       });
   }, []);
 
+  // Keep ref in sync so effects can read current playing state without stale closure
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
+
   // Update audio src and attach ended listener when track changes
   useEffect(() => {
     const audio = audioRef.current;
@@ -66,6 +72,13 @@ const Index = () => {
 
     audio.pause();
     audio.src = previewUrl ?? "";
+
+    // If already playing (e.g. user hit skip mid-song), resume on the new track
+    if (isPlayingRef.current && previewUrl) {
+      audio.play().catch(() => {
+        // Autoplay blocked or src invalid — keep UI state as-is
+      });
+    }
 
     const handleEnded = () => {
       handleSkip();
@@ -264,10 +277,6 @@ const Index = () => {
         isImporting={isImporting}
         playlistTitle={playlist?.title}
         playlistImage={playlistImage}
-        isPlaying={isPlaying}
-        onPlayPause={handlePlayPause}
-        onSkip={handleSkip}
-        onPrevious={handlePrevious}
       />
 
       <div className="container mx-auto px-4 md:px-6 py-4 md:py-8">
@@ -303,6 +312,7 @@ const Index = () => {
                 onPlayPause={handlePlayPause}
                 onSkip={handleSkip}
                 onPrevious={handlePrevious}
+                audioRef={audioRef}
               />
             </div>
 

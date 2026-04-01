@@ -2,6 +2,7 @@ import { Play, Pause, SkipBack, SkipForward } from "lucide-react";
 import { Track } from "@/data/mockPlaylist";
 import VinylDeck from "./VinylDeck";
 import SongBlock from "./SongBlock";
+import EQVisualizer from "./EQVisualizer";
 
 interface DJControllerProps {
   currentTrack: Track | null;
@@ -16,59 +17,9 @@ interface DJControllerProps {
   onPlayPause?: () => void;
   onSkip?: () => void;
   onPrevious?: () => void;
+  audioRef?: React.RefObject<HTMLAudioElement | null>;
 }
 
-// Amber dot knob — dot at rim indicates position
-const Knob = ({ label, rotation = 45 }: { label: string; rotation?: number }) => {
-  // dot position on rim: 26px from center at given angle
-  const rad = ((rotation - 90) * Math.PI) / 180;
-  const r = 26;
-  const dotX = 34 + r * Math.cos(rad); // 34 = half of 68px knob
-  const dotY = 34 + r * Math.sin(rad);
-
-  return (
-    <div className="flex flex-col items-center gap-1.5">
-      {/* Knob body */}
-      <div
-        className="relative w-[68px] h-[68px] rounded-full flex items-center justify-center"
-        style={{
-          background: "radial-gradient(circle at 38% 32%, #ECEAE6, #CCCAC4)",
-          boxShadow: "4px 4px 10px rgba(0,0,0,0.18), -2px -2px 6px rgba(255,255,255,0.9), inset 1px 1px 3px rgba(255,255,255,0.6)",
-        }}
-      >
-        {/* Inner cap */}
-        <div
-          className="w-12 h-12 rounded-full"
-          style={{
-            background: "radial-gradient(circle at 38% 32%, #F0EDE8, #DEDBD6)",
-            boxShadow: "inset 2px 2px 5px rgba(0,0,0,0.12)",
-          }}
-        />
-        {/* Amber position dot at rim */}
-        <div
-          className="absolute w-2 h-2 rounded-full"
-          style={{
-            background: "#E8A020",
-            boxShadow: "0 0 6px rgba(232,160,32,0.7)",
-            left: `${dotX - 4}px`,
-            top: `${dotY - 4}px`,
-          }}
-        />
-      </div>
-      {/* Single label below */}
-      <span
-        style={{
-          fontSize: "10px",
-          color: "#999",
-          letterSpacing: "0.08em",
-          fontVariantNumeric: "tabular-nums",
-        }}
-      >
-        {label}
-      </span>
-    </div>
-  );
-};
 
 const DJController = ({
   currentTrack,
@@ -82,6 +33,7 @@ const DJController = ({
   onPlayPause,
   onSkip,
   onPrevious,
+  audioRef,
 }: DJControllerProps) => {
   const leftDeckTrack = activeDeck === "left" ? currentTrack : nextTrack;
   const rightDeckTrack = activeDeck === "right" ? currentTrack : nextTrack;
@@ -159,11 +111,8 @@ const DJController = ({
 
         {/* Center mixer */}
         <div className="flex flex-col items-center justify-between gap-5 px-2">
-          {/* EQ knobs */}
-          <div className="flex gap-6">
-            <Knob label="bass" rotation={40} />
-            <Knob label="treble" rotation={-40} />
-          </div>
+          {/* EQ Visualizer */}
+          <EQVisualizer isPlaying={isPlaying} audioRef={audioRef} />
 
           {/* Full-width crossfader */}
           <div className="w-full flex flex-col gap-1.5">

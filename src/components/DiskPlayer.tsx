@@ -8,7 +8,7 @@ interface DiskPlayerProps {
   side: "left" | "right";
 }
 
-const DiskPlayer = ({ isPlaying, side }: DiskPlayerProps) => {
+const DiskPlayer = ({ track, isPlaying, side }: DiskPlayerProps) => {
   return (
     <div className="relative">
       <div
@@ -33,7 +33,7 @@ const DiskPlayer = ({ isPlaying, side }: DiskPlayerProps) => {
         </div>
 
         {/* Vinyl platter */}
-        <VinylDisk isPlaying={isPlaying} />
+        <VinylDisk track={track} isPlaying={isPlaying} />
 
         {/* Stylus arm */}
         <Stylus isPlaying={isPlaying} side={side} />

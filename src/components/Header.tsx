@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Headphones, Music, Loader2, Play, Pause, SkipBack, SkipForward } from "lucide-react";
+import { Headphones, Music, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -8,10 +8,6 @@ interface HeaderProps {
   isImporting?: boolean;
   playlistTitle?: string;
   playlistImage?: string;
-  isPlaying?: boolean;
-  onPlayPause?: () => void;
-  onSkip?: () => void;
-  onPrevious?: () => void;
 }
 
 const Header = ({
@@ -19,10 +15,6 @@ const Header = ({
   isImporting = false,
   playlistTitle,
   playlistImage,
-  isPlaying = false,
-  onPlayPause,
-  onSkip,
-  onPrevious,
 }: HeaderProps) => {
   const hasPlaylist = Boolean(playlistTitle);
 
@@ -46,9 +38,9 @@ const Header = ({
   };
 
   return (
-    <header className="backdrop-blur-sm sticky top-0 z-50" style={{ background: "rgba(236,234,230,0.92)", borderBottom: "1px solid #D0CCC6" }}>
+    <header className="sticky top-0 z-50">
       <div className="container mx-auto px-4 md:px-6 py-3 md:py-4">
-        <div className="grid grid-cols-[auto_1fr] items-center gap-3 md:gap-6">
+        <div className="flex items-center justify-between">
           {/* DJ Logo */}
           <div className="flex items-center">
             <img
@@ -58,120 +50,75 @@ const Header = ({
             />
           </div>
 
-          {/* URL input + player pill */}
-          <div className="flex items-center justify-center gap-3 md:gap-4">
+          {/* URL input + playlist pill — matching pill pair */}
+          <div className="flex items-center gap-2">
 
-            {/* Animated input bar */}
+            {/* Input pill */}
             <div
               className="transition-all duration-500 ease-in-out overflow-hidden"
-              style={{ maxWidth: inputExpanded ? "487px" : "122px", width: "100%" }}
+              style={{ width: inputExpanded ? "340px" : "44px" }}
             >
               {inputExpanded ? (
                 <form onSubmit={handleSubmit}>
-                  <div className="relative flex items-center">
-                    <Headphones className="absolute left-4 md:left-5 w-5 h-5 md:w-6 md:h-6 text-gray-400 z-10" />
+                  <div
+                    className="relative flex items-center h-[44px] rounded-full"
+                    style={{ background: "#ECEAE6", border: "1px solid #D0CCC6" }}
+                  >
+                    <Headphones className="absolute left-4 w-4 h-4 flex-shrink-0" style={{ color: "#8A8680" }} />
                     <Input
                       type="text"
                       name="playlistUrl"
-                      placeholder="Paste a playlist link"
+                      placeholder="Paste a Jamendo playlist or album link"
                       disabled={isImporting}
                       autoFocus={hasPlaylist}
-                      className="w-full pl-12 md:pl-14 pr-12 md:pr-14 py-5 md:py-6 bg-gray-100 border-none text-gray-800 placeholder:text-gray-400 rounded-full text-sm md:text-base shadow-neumorphic-inset focus:shadow-neumorphic-inset focus-visible:ring-0 focus-visible:ring-offset-0 disabled:opacity-60"
+                      className="w-full pl-10 pr-12 h-full bg-transparent border-none text-sm placeholder:text-[#A8A49E] focus-visible:ring-0 focus-visible:ring-offset-0 disabled:opacity-60"
+                      style={{ color: "#3C3A36" }}
                     />
                     <Button
                       type="submit"
                       disabled={isImporting}
-                      className="absolute right-2 md:right-3 w-[30px] h-[30px] bg-gray-900 hover:bg-gray-800 text-white rounded-full p-0 flex items-center justify-center shadow-lg group disabled:opacity-60"
+                      className="absolute right-1.5 w-[32px] h-[32px] bg-[#2A2825] hover:bg-[#3C3A36] text-white rounded-full p-0 flex items-center justify-center shadow-sm group disabled:opacity-60"
                     >
                       {isImporting ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
                       ) : (
-                        <img
-                          src="/disk-icon.png"
-                          alt="Submit"
-                          className="w-5 h-5 group-hover:animate-spin"
-                        />
+                        <img src="/disk-icon.png" alt="Submit" className="w-4 h-4 group-hover:animate-spin" />
                       )}
                     </Button>
                   </div>
                 </form>
               ) : (
-                /* Collapsed — click to expand */
                 <button
                   onClick={() => setInputExpanded(true)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 h-[46px] bg-gray-100 rounded-full shadow-neumorphic-inset hover:bg-gray-200 transition-colors group"
+                  className="w-[44px] h-[44px] rounded-full flex items-center justify-center flex-shrink-0 transition-colors hover:brightness-95"
+                  style={{ background: "#ECEAE6", border: "1px solid #D0CCC6" }}
                   title="Paste a new playlist link"
                 >
-                  <Headphones className="w-5 h-5 text-gray-400 flex-shrink-0 group-hover:text-gray-600 transition-colors" />
-                  <span className="text-gray-400 text-sm truncate group-hover:text-gray-600 transition-colors">
-                    New link…
-                  </span>
+                  <Headphones className="w-4 h-4" style={{ color: "#8A8680" }} />
                 </button>
               )}
             </div>
 
-            {/* Compact player pill */}
-            <div className="hidden lg:flex items-center h-[44px] bg-white border-2 border-gray-200 rounded-full shadow-sm overflow-hidden flex-shrink-0">
-              {hasPlaylist ? (
-                <>
-                  {/* Album art */}
-                  <div className="w-[38px] h-[38px] ml-[2px] rounded-full overflow-hidden flex-shrink-0 bg-gray-100">
-                    {playlistImage ? (
-                      <img src={playlistImage} alt={playlistTitle} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Music className="w-4 h-4 text-gray-400" />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Title */}
-                  <span className="text-gray-800 text-sm font-semibold whitespace-nowrap px-3 max-w-[140px] truncate">
-                    {playlistTitle}
-                  </span>
-
-                  {/* Divider */}
-                  <div className="w-px h-5 bg-gray-200 flex-shrink-0" />
-
-                  {/* Controls */}
-                  <div className="flex items-center gap-0.5 px-2">
-                    <button
-                      onClick={onPrevious}
-                      className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
-                    >
-                      <SkipBack className="w-3.5 h-3.5 text-gray-700" fill="currentColor" />
-                    </button>
-
-                    <button
-                      onClick={onPlayPause}
-                      className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-900 hover:bg-gray-700 transition-colors"
-                    >
-                      {isPlaying ? (
-                        <Pause className="w-3.5 h-3.5 text-white" fill="currentColor" />
-                      ) : (
-                        <Play className="w-3.5 h-3.5 text-white ml-0.5" fill="currentColor" />
-                      )}
-                    </button>
-
-                    <button
-                      onClick={onSkip}
-                      className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
-                    >
-                      <SkipForward className="w-3.5 h-3.5 text-gray-700" fill="currentColor" />
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <div className="flex items-center gap-3 pl-2 pr-4 border-2 border-dashed border-gray-300 rounded-full h-full -m-0.5">
-                  <div className="w-[30px] h-[30px] rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
-                    <Music className="w-4 h-4 text-gray-400" />
-                  </div>
-                  <span className="text-gray-400 text-sm font-medium whitespace-nowrap">
-                    Your playlist
-                  </span>
+            {/* Playlist pill */}
+            {hasPlaylist && (
+              <div
+                className="flex items-center gap-2.5 h-[44px] pl-1.5 pr-4 rounded-full flex-shrink-0"
+                style={{ background: "#ECEAE6", border: "1px solid #D0CCC6" }}
+              >
+                <div className="w-[34px] h-[34px] rounded-full overflow-hidden flex-shrink-0 bg-[#D8D4CE]">
+                  {playlistImage ? (
+                    <img src={playlistImage} alt={playlistTitle} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Music className="w-3.5 h-3.5" style={{ color: "#8A8680" }} />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+                <span className="text-sm font-medium whitespace-nowrap max-w-[160px] truncate" style={{ color: "#3C3A36" }}>
+                  {playlistTitle}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>

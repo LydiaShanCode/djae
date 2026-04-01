@@ -1,8 +1,11 @@
+import { Track } from "@/data/mockPlaylist";
+
 interface VinylDiskProps {
+  track: Track | null;
   isPlaying: boolean;
 }
 
-const VinylDisk = ({ isPlaying }: VinylDiskProps) => {
+const VinylDisk = ({ track, isPlaying }: VinylDiskProps) => {
   return (
     <div className="relative w-72 h-72 mx-auto">
       {/* Entire platter spins when playing */}
@@ -27,23 +30,25 @@ const VinylDisk = ({ isPlaying }: VinylDiskProps) => {
             />
           ))}
 
-          {/* Center label — flat grey with DJAE mark */}
+          {/* Center label — album art with spindle overlay */}
           <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-inner"
-            style={{ background: "#DEDBD6", border: "3px solid #1a1a1a" }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full overflow-hidden shadow-inner"
+            style={{ border: "3px solid #1a1a1a" }}
           >
-            {/* Spindle hole */}
+            {track ? (
+              <img
+                src={track.albumArtUrl}
+                alt={track.album}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full" style={{ background: "#DEDBD6" }} />
+            )}
+            {/* Spindle hole overlay */}
             <div
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full"
-              style={{ background: "#1a1a1a" }}
+              style={{ background: "#1a1a1a", border: "2px solid rgba(255,255,255,0.2)" }}
             />
-            {/* DJAE wordmark */}
-            <span
-              className="font-bold tracking-widest select-none"
-              style={{ fontSize: "11px", color: "#5C584F", letterSpacing: "0.2em" }}
-            >
-              DJAE
-            </span>
           </div>
         </div>
       </div>
