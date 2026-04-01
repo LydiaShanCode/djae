@@ -6,6 +6,8 @@ import { mockPlaylist, Track, Playlist } from "@/data/mockPlaylist";
 import { useToast } from "@/hooks/use-toast";
 import { extractJamendoId, fetchJamendoPlaylist, isJamendoConfigured } from "@/lib/jamendo";
 
+const DEFAULT_PLAYLIST_URL = "https://www.jamendo.com/playlist/500608471/beatmaker-s-arena";
+
 const Index = () => {
   const { toast } = useToast();
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -19,8 +21,6 @@ const Index = () => {
     };
   }, []);
 
-  const DEFAULT_PLAYLIST_URL = "https://www.jamendo.com/playlist/500332577/midnight-jazz";
-
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
   const [isLoadingDefault, setIsLoadingDefault] = useState(true);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
@@ -32,29 +32,32 @@ const Index = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Auto-load the default playlist on mount
+  // Auto-load the default Jamendo playlist on mount, fall back to mock data on any failure
   useEffect(() => {
-    if (!isJamendoConfigured()) {
-      setPlaylist(mockPlaylist);
-      setIsLoadingDefault(false);
-      return;
-    }
-    const parsed = extractJamendoId(DEFAULT_PLAYLIST_URL);
+    const configured = isJamendoConfigured();
+    const parsed = configured ? extractJamendoId(DEFAULT_PLAYLIST_URL) : null;
+    // #region agent log
+    localStorage.setItem('djae_debug_143206', JSON.stringify({step:'start',configured,parsed,url:DEFAULT_PLAYLIST_URL,ts:Date.now()}));
+    // #endregion
     if (!parsed) {
       setPlaylist(mockPlaylist);
       setIsLoadingDefault(false);
       return;
     }
     fetchJamendoPlaylist(parsed.id, parsed.type)
-      .then((imported) => {
-        setPlaylist(imported);
+      .then((result) => {
+        // #region agent log
+        localStorage.setItem('djae_debug_143206', JSON.stringify({step:'success',title:result.title,trackCount:result.trackCount,hasTracks:result.tracks?.length>0,firstPreview:result.tracks?.[0]?.previewUrl?.slice(0,60),ts:Date.now()}));
+        // #endregion
+        setPlaylist(result);
       })
-      .catch(() => {
+      .catch((err) => {
+        // #region agent log
+        localStorage.setItem('djae_debug_143206', JSON.stringify({step:'error',error:String(err),ts:Date.now()}));
+        // #endregion
         setPlaylist(mockPlaylist);
       })
-      .finally(() => {
-        setIsLoadingDefault(false);
-      });
+      .finally(() => setIsLoadingDefault(false));
   }, []);
 
   // Update audio src and attach ended listener when track changes

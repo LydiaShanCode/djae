@@ -102,12 +102,15 @@ const DJController = ({
 
       {/* Deck cards + center mixer */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_200px_1fr] gap-4 mb-8">
+        <div className="min-w-0 overflow-hidden">
         <SongBlock
           track={activeDeck === "left" ? currentTrack : nextTrack}
           isPlaying={leftDeckPlaying}
           isCurrentTrack={activeDeck === "left"}
           progress={activeDeck === "left" ? currentProgress : 0}
+          audioRef={activeDeck === "left" ? audioRef : undefined}
         />
+        </div>
 
         {/* Center mixer */}
         <div className="flex flex-col items-center justify-between gap-5 px-2">
@@ -200,12 +203,15 @@ const DJController = ({
           </div>
         </div>
 
+        <div className="min-w-0 overflow-hidden">
         <SongBlock
           track={activeDeck === "right" ? currentTrack : nextTrack}
           isPlaying={rightDeckPlaying}
           isCurrentTrack={activeDeck === "right"}
           progress={activeDeck === "right" ? currentProgress : 0}
+          audioRef={activeDeck === "right" ? audioRef : undefined}
         />
+        </div>
       </div>
 
       {/* Turntable decks */}

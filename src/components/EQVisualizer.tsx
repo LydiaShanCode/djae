@@ -6,149 +6,94 @@ interface EQVisualizerProps {
 }
 
 const BAR_COUNT = 20;
-const DOT_ROWS = 8;
+const FREQ_LABELS = ["60", "250", "1k", "4k", "16k"];
 
-function getBinIndices(bufferLength: number): number[] {
-  const min = 1;
-  const max = Math.floor(bufferLength * 0.6);
-  return Array.from({ length: BAR_COUNT }, (_, i) => {
-    const t = i / (BAR_COUNT - 1);
-    return Math.round(min + (max - min) * Math.pow(t, 1.6));
-  });
+// Each bar has a current height (0–1), a spring target, and velocity
+interface Bar { h: number; target: number; vel: number }
+
+function randomTarget(i: number) {
+  // Shape the curve: louder in the mids, quieter at extremes
+  const mid = BAR_COUNT / 2;
+  const bias = 1 - Math.abs(i - mid) / mid * 0.5;
+  return (0.15 + Math.random() * 0.85) * bias;
 }
 
-const EQVisualizer = ({ isPlaying, audioRef }: EQVisualizerProps) => {
+const EQVisualizer = ({ isPlaying }: EQVisualizerProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const ctxRef = useRef<AudioContext | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
+  const barsRef = useRef<Bar[]>(
+    Array.from({ length: BAR_COUNT }, (_, i) => ({
+      h: 0.05,
+      target: randomTarget(i),
+      vel: 0,
+    }))
+  );
+  const isPlayingRef = useRef(isPlaying);
   const rafRef = useRef<number>(0);
-  const dataRef = useRef<Uint8Array>(new Uint8Array(128));
-  const binIndicesRef = useRef<number[]>([]);
 
-  // Attach to the audio element's "play" event so the AudioContext is
-  // created during the browser's user-gesture chain — avoiding autoplay suspension.
   useEffect(() => {
-    const audio = audioRef?.current;
-    if (!audio) return;
-
-    const initAnalyser = () => {
-      if (sourceRef.current) {
-        // Already connected — just resume if suspended
-        ctxRef.current?.resume();
-        return;
-      }
-      try {
-        const ac = new AudioContext();
-        const analyser = ac.createAnalyser();
-        analyser.fftSize = 256;
-        analyser.smoothingTimeConstant = 0.45;
-        const source = ac.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(ac.destination);
-        ctxRef.current = ac;
-        analyserRef.current = analyser;
-        sourceRef.current = source;
-        dataRef.current = new Uint8Array(analyser.frequencyBinCount);
-        binIndicesRef.current = getBinIndices(analyser.frequencyBinCount);
-        // Resume in case the context was created suspended
-        ac.resume();
-      } catch {
-        // CORS or other error — fall back to static visualizer, audio unaffected
-        ctxRef.current = null;
-      }
-    };
-
-    audio.addEventListener("play", initAnalyser);
-    return () => audio.removeEventListener("play", initAnalyser);
-  }, [audioRef]);
-
-  // Draw loop
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const AMBER = "#E8A020";
-    const AMBER_GLOW = "rgba(232,160,32,0.85)";
-    const DIM = "rgba(200,196,190,0.35)";
-
-    const draw = () => {
-      rafRef.current = requestAnimationFrame(draw);
-
-      const w = canvas.width;
-      const h = canvas.height;
-      ctx.clearRect(0, 0, w, h);
-
-      let levels: number[];
-
-      if (isPlaying && analyserRef.current) {
-        analyserRef.current.getByteFrequencyData(dataRef.current);
-        levels = binIndicesRef.current.map((bin) => {
-          const pct = dataRef.current[bin] / 255;
-          return Math.round(pct * DOT_ROWS);
-        });
-      } else {
-        levels = Array(BAR_COUNT).fill(0);
-      }
-
-      const slotW = w / BAR_COUNT;
-      const dotD = Math.min(slotW * 0.55, (h / DOT_ROWS) * 0.62);
-      const colX = (i: number) => i * slotW + slotW / 2;
-      const rowY = (row: number) => h - (row + 0.5) * (h / DOT_ROWS);
-
-      for (let col = 0; col < BAR_COUNT; col++) {
-        const active = levels[col];
-        for (let row = 0; row < DOT_ROWS; row++) {
-          const x = colX(col);
-          const y = rowY(row);
-          const lit = row < active;
-
-          ctx.beginPath();
-          ctx.arc(x, y, dotD / 2, 0, Math.PI * 2);
-
-          if (lit) {
-            if (row === active - 1 && active > 0) {
-              ctx.fillStyle = AMBER_GLOW;
-              ctx.shadowColor = "#E8A020";
-              ctx.shadowBlur = 6;
-            } else {
-              ctx.fillStyle = AMBER;
-              ctx.shadowBlur = 0;
-            }
-          } else {
-            ctx.fillStyle = DIM;
-            ctx.shadowBlur = 0;
-          }
-          ctx.fill();
-        }
-      }
-      ctx.shadowBlur = 0;
-    };
-
-    draw();
-    return () => cancelAnimationFrame(rafRef.current);
+    isPlayingRef.current = isPlaying;
   }, [isPlaying]);
 
   useEffect(() => {
-    return () => {
-      cancelAnimationFrame(rafRef.current);
-      ctxRef.current?.close();
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d")!;
+
+    const draw = () => {
+      const W = canvas.width;
+      const H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const playing = isPlayingRef.current;
+      const barSlot = W / BAR_COUNT;
+      const gap = barSlot * 0.4;
+      const barW = barSlot - gap;
+      const dotH = 3;
+      const dotGap = 2;
+      const step = dotH + dotGap;
+
+      barsRef.current.forEach((bar, i) => {
+        if (playing) {
+          bar.vel += (bar.target - bar.h) * 0.1;
+          bar.vel *= 0.72;
+          bar.h = Math.max(0.04, Math.min(1, bar.h + bar.vel));
+          if (Math.random() < 0.04) bar.target = randomTarget(i);
+        } else {
+          bar.h += (0.04 - bar.h) * 0.08;
+        }
+
+        const barH = bar.h * H;
+        const x = i * barSlot + gap / 2;
+        const numDots = Math.floor(barH / step);
+
+        for (let d = 0; d < numDots; d++) {
+          // Warm amber gradient: deep amber at bottom, bright gold at top
+          const ratio = d / Math.max(numDots - 1, 1);
+          const g = Math.round(160 + ratio * 56);
+          ctx.fillStyle = playing
+            ? `rgba(232,${g},32,${0.7 + ratio * 0.3})`
+            : `rgba(184,180,174,0.45)`;
+          ctx.fillRect(x, H - (d + 1) * step, barW, dotH);
+        }
+      });
+
+      rafRef.current = requestAnimationFrame(draw);
     };
+
+    rafRef.current = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(rafRef.current);
   }, []);
 
   return (
     <div className="flex flex-col items-center gap-1.5 w-full">
       <canvas
         ref={canvasRef}
-        width={200}
+        width={400}
         height={64}
-        className="w-full"
-        style={{ height: "64px" }}
+        style={{ width: "100%", height: "64px", display: "block" }}
       />
       <div className="flex justify-between w-full px-1">
-        {["60", "250", "1k", "4k", "16k"].map((label) => (
+        {FREQ_LABELS.map((label) => (
           <span key={label} style={{ fontSize: "8px", color: "#B8B4AE", fontFamily: "monospace" }}>
             {label}
           </span>

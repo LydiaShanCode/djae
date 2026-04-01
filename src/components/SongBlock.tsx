@@ -1,4 +1,5 @@
 import { Track } from "@/data/mockPlaylist";
+import React from "react";
 import Waveform from "./Waveform";
 
 interface SongBlockProps {
@@ -6,9 +7,10 @@ interface SongBlockProps {
   isPlaying?: boolean;
   isCurrentTrack?: boolean;
   progress?: number;
+  audioRef?: React.RefObject<HTMLAudioElement | null>;
 }
 
-const SongBlock = ({ track, isPlaying = false, isCurrentTrack = false, progress = 0 }: SongBlockProps) => {
+const SongBlock = ({ track, isPlaying = false, isCurrentTrack = false, progress = 0, audioRef }: SongBlockProps) => {
   if (!track) {
     return (
       <div
@@ -26,7 +28,7 @@ const SongBlock = ({ track, isPlaying = false, isCurrentTrack = false, progress 
 
   return (
     <div
-      className="rounded-2xl p-5 transition-all duration-300"
+      className="rounded-2xl p-5 transition-all duration-300 w-full min-w-0"
       style={{
         background: "#F0EDE8",
         border: isCurrentTrack ? "1px solid #E8A020" : "1px solid #D0CCC6",
@@ -101,9 +103,9 @@ const SongBlock = ({ track, isPlaying = false, isCurrentTrack = false, progress 
 
       {/* Waveform */}
       <Waveform
-        progress={isCurrentTrack ? progress : 0}
+        audioUrl={isCurrentTrack ? (track.previewUrl ?? null) : null}
+        audioRef={isCurrentTrack ? audioRef : undefined}
         isPlaying={isPlaying && isCurrentTrack}
-        trackId={track.id}
         isActive={isCurrentTrack}
       />
     </div>

@@ -62,11 +62,25 @@ async function fetchAlbumPlaylist(albumId: string): Promise<Playlist> {
     `${BASE}/albums/tracks/?client_id=${CLIENT_ID}` +
     `&format=json&limit=200&id=${albumId}&imagesize=500`;
 
+  // #region agent log
+  localStorage.setItem('djae_debug_jam_143206', JSON.stringify({step:'request',albumId,clientIdPresent:Boolean(CLIENT_ID),ts:Date.now()}));
+  // #endregion
+
   const res = await fetch(url);
+
+  // #region agent log
+  localStorage.setItem('djae_debug_jam_143206', JSON.stringify({step:'response',status:res.status,ok:res.ok,ts:Date.now()}));
+  // #endregion
+
   if (!res.ok) throw new Error("Failed to fetch Jamendo album");
 
   const data = await res.json();
   const result = data.results?.[0];
+
+  // #region agent log
+  localStorage.setItem('djae_debug_jam_143206', JSON.stringify({step:'parsed',hasResult:Boolean(result),resultsCount:data.results?.length,trackCount:result?.tracks?.length,apiHeaders:data.headers,ts:Date.now()}));
+  // #endregion
+
   if (!result) throw new Error("Album not found");
 
   const tracks: Track[] = (result.tracks ?? []).map((t: any) =>

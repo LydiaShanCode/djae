@@ -1,54 +1,88 @@
-import { useMemo } from "react";
+import { useEffect, useRef } from "react";
+import WaveSurfer from "wavesurfer.js";
 
 interface WaveformProps {
-  progress?: number;
+  audioUrl?: string | null;
+  audioRef?: React.RefObject<HTMLAudioElement | null>;
   isPlaying?: boolean;
-  barCount?: number;
-  trackId?: string;
   isActive?: boolean;
 }
 
-const Waveform = ({
-  progress = 0,
-  isPlaying = false,
-  barCount = 80,
-  trackId = "default",
-  isActive = false,
-}: WaveformProps) => {
-  const barHeights = useMemo(() => {
-    const seed = trackId.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return Array.from({ length: barCount }, (_, i) => {
-      const x = (seed + i) * 0.5;
-      const h = 40 + Math.sin(x * 0.1) * 30 + Math.sin(x * 0.3) * 20 + Math.sin(x * 0.05) * 15 + ((seed + i * 7) % 20) - 10;
-      return Math.max(15, Math.min(95, h));
-    });
-  }, [trackId, barCount]);
+const Waveform = ({ audioUrl, audioRef, isPlaying = false, isActive = false }: WaveformProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const wsRef = useRef<WaveSurfer | null>(null);
 
-  const playedCount = Math.round((progress / 100) * barCount);
+  useEffect(() => {
+    const container = containerRef.current;
+    const audio = audioRef?.current;
+    if (!container || !audioUrl) return;
+
+    // Destroy any previous instance before creating a new one
+    wsRef.current?.destroy();
+    wsRef.current = null;
+
+    const ws = WaveSurfer.create({
+      container,
+      // Connect to existing audio element so playback is shared
+      media: audio ?? undefined,
+      url: audioUrl,
+      waveColor: "#C8C4BE",
+      progressColor: isActive ? "#E8A020" : "#5C584F",
+      cursorColor: "transparent",
+      barWidth: 2,
+      barGap: 2,
+      barRadius: 2,
+      height: 56,
+      normalize: true,
+      interact: false,
+      fetchParams: { mode: "cors" },
+    });
+
+    wsRef.current = ws;
+
+    return () => {
+      ws.destroy();
+      wsRef.current = null;
+    };
+  // Re-init whenever the track URL changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [audioUrl]);
+
+  // Keep progress color in sync with active deck state
+  useEffect(() => {
+    wsRef.current?.setOptions({
+      progressColor: isActive ? "#E8A020" : "#5C584F",
+    });
+  }, [isActive]);
+
+  if (!audioUrl) {
+    // Fallback static bars when no audio URL is available
+    return (
+    <div
+      className="relative rounded-lg overflow-hidden flex items-center px-2 gap-[2px]"
+      style={{ background: "#E8E5E0", height: "56px", flexShrink: 0 }}
+    >
+        {Array.from({ length: 80 }, (_, i) => (
+          <div
+            key={i}
+            className="flex-1 rounded-full"
+            style={{
+              height: `${30 + Math.sin(i * 0.3) * 20 + Math.sin(i * 0.07) * 15}%`,
+              background: "#C8C4BE",
+              opacity: 0.5,
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div
-      className="relative h-14 rounded-lg overflow-hidden flex items-center px-2 gap-[2px]"
-      style={{ background: "#E8E5E0" }}
-    >
-      {barHeights.map((height, i) => {
-        const played = i < playedCount;
-        return (
-          <div
-            key={i}
-            className={`flex-1 rounded-full transition-colors duration-100 ${isPlaying && played ? "animate-pulse" : ""}`}
-            style={{
-              height: `${height}%`,
-              background: played
-                ? isActive ? "#E8A020" : "#5C584F"
-                : "#B8B4AE",
-              animationDelay: isPlaying ? `${(i % 8) * 60}ms` : undefined,
-              animationDuration: "1.2s",
-            }}
-          />
-        );
-      })}
-    </div>
+      ref={containerRef}
+      className="w-full rounded-lg overflow-hidden"
+      style={{ background: "#E8E5E0", height: "56px", flexShrink: 0 }}
+    />
   );
 };
 
