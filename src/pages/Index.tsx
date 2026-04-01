@@ -25,7 +25,7 @@ const Index = () => {
   const [isLoadingDefault, setIsLoadingDefault] = useState(true);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const isPlayingRef = useRef(false);
+  const shouldAutoPlayRef = useRef(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [recordingTime, setRecordingTime] = useState(0);
   const [activeDeck, setActiveDeck] = useState<"left" | "right">("left");
@@ -57,11 +57,6 @@ const Index = () => {
       });
   }, []);
 
-  // Keep ref in sync so effects can read current playing state without stale closure
-  useEffect(() => {
-    isPlayingRef.current = isPlaying;
-  }, [isPlaying]);
-
   // Update audio src and attach ended listener when track changes
   useEffect(() => {
     const audio = audioRef.current;
@@ -73,10 +68,11 @@ const Index = () => {
     audio.pause();
     audio.src = previewUrl ?? "";
 
-    // If already playing (e.g. user hit skip mid-song), resume on the new track
-    if (isPlayingRef.current && previewUrl) {
+    // Consume the auto-play flag set synchronously in handleSkip / handlePrevious
+    if (shouldAutoPlayRef.current && previewUrl) {
+      shouldAutoPlayRef.current = false;
       audio.play().catch(() => {
-        // Autoplay blocked or src invalid — keep UI state as-is
+        setIsPlaying(false);
       });
     }
 
@@ -182,10 +178,12 @@ const Index = () => {
   const handleSkip = () => {
     audioRef.current?.pause();
     if (currentTrackIndex < (playlist?.tracks.length ?? 0) - 1) {
+      shouldAutoPlayRef.current = isPlaying;
       setCurrentTrackIndex(currentTrackIndex + 1);
       setCurrentTime(0);
       setActiveDeck(activeDeck === "left" ? "right" : "left");
     } else {
+      shouldAutoPlayRef.current = false;
       setIsPlaying(false);
       setCurrentTime(0);
       toast({
@@ -198,6 +196,7 @@ const Index = () => {
   const handlePrevious = () => {
     audioRef.current?.pause();
     if (currentTrackIndex > 0) {
+      shouldAutoPlayRef.current = isPlaying;
       setCurrentTrackIndex(currentTrackIndex - 1);
       setCurrentTime(0);
       setActiveDeck(activeDeck === "left" ? "right" : "left");
